@@ -41,12 +41,12 @@ export default function Dashboard() {
     <div style={{ padding: '20px' }}>
       <h2>Dashboard Keuangan</h2>
       <Link to={"/buku-utama"}>
-      <button style={buttonStyle}>Ke Buku Utama</button></Link>
+      <button style={buttonStyle}>BUKU UTAMA</button></Link>
 
       {/* Tombol ke Laporan Lapangan */}
       <div style={{ marginBottom: '30px' }}>
         <Link to="/laporan-lapangan">
-          <button style={buttonStyle}>+ Tambah Laporan Lapangan</button>
+          <button style={buttonStyle}>LAPORAN LAPANGAN</button>
         </Link>
       </div>
 

@@ -1,5 +1,5 @@
 export interface LaporanLapanganRequest {
-  id?: string;
+  // id?: string;
   tanggal: string; // ISO format
   kodeLapangan: string;
   deskripsi: string;
@@ -9,5 +9,5 @@ export interface LaporanLapanganRequest {
   kredit: number;
   keterangan: string;
   buktiPath?: string;
-  namaUser?: string;
+  namaUser: string;
 }

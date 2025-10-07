@@ -36,8 +36,15 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
 
   // load lists + prefill for edit
   useEffect(() => {
-    apiClient.get("/akun?size=100").then((res) => setAkunList(res.data.content));
-    apiClient.get("/kegiatan?size=100").then((res) => setKegiatanList(res.data.content));
+    apiClient.get("/akun?size=100").then((res) => { 
+      if (res.data?.content) setAkunList(res.data.content);
+      else setAkunList(res.data);})
+      .catch((err) => console.error("Error fetching akun list:", err));
+
+    apiClient.get("/kegiatan?size=100").then((res) => {
+      if (res.data?.content) setKegiatanList(res.data.content);
+      else setKegiatanList(res.data);})
+      .catch((err) => console.error("Error fetching kegiatan list:", err));
   }, []);
   
   useEffect(() => {

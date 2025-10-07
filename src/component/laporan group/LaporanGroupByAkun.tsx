@@ -55,6 +55,7 @@ export default function LaporanGroupByAkun(){
         fetchUrl="http://localhost:8080/api/laporan/group/akun"
         columns={columns}
         pageSize={10}
+        extraParams={{ tanggalAwal: startData, tanggalAkhir: endDate }}
       />
       )}
     </div>

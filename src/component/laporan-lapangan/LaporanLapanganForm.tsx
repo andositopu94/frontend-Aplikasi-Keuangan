@@ -49,6 +49,8 @@ export default function LaporanLapanganForm({ isOpen, onClose, onSuccess, initia
     e.preventDefault();
     try{
       const data= new FormData();
+      const payload = { ...formData };
+      delete payload.id;
       data.append("request", new Blob([JSON.stringify(formData)],
     {
       type:"application/json"
@@ -138,7 +140,7 @@ export default function LaporanLapanganForm({ isOpen, onClose, onSuccess, initia
               onChange={handleChange}
             />
           </div>
-          <div>
+          {/* <div>
             <label>Nama Kegiatan</label>
             <input
               type="text"
@@ -146,7 +148,7 @@ export default function LaporanLapanganForm({ isOpen, onClose, onSuccess, initia
               value={formData.namaKegiatan || ""}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
           <div>
             <label>Upload Bukti</label>
             <input type="file" accept="image/jpeg,image/png" onChange={handleFileChange}/>

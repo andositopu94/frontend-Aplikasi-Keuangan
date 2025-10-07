@@ -13,6 +13,8 @@ interface DynamicTableProps<T> {
   pageSize?: number;
   refreshKey?: number;
   extraParams?: Record<string, string>;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 export const DynamicTable = <T extends Record<string, any>>({
@@ -22,34 +24,34 @@ export const DynamicTable = <T extends Record<string, any>>({
   onRowUpdate,
   onDataChange,
   pageSize = 10,
-  refreshKey =0,
-  extraParams = {}
+  refreshKey = 0,
+  extraParams = {},
+  currentPage,
+  onPageChange,
 }: DynamicTableProps<T>) => {
   const [data, setData] = useState<T[]>([]);
-  const [page, setPage] = useState(0);
+  const [internalPage, setInternalPage] = useState(0);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const stableParams = JSON.stringify(extraParams);
+  const page = currentPage ?? internalPage;
 
   useEffect(() => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // ✅ Gunakan URL untuk membangun query string dengan benar
+      //  Gunakan URL untuk membangun query string dengan benar
       const url = new URL(fetchUrl, window.location.origin);
       url.searchParams.set('page', page.toString());
       url.searchParams.set('size', pageSize.toString());
-      // if (search) url.searchParams.set('search', search);
+      
 
       // Tambahkan extraParams
       Object.entries(extraParams).forEach(([key, value]) => {
-        // if (value !==undefined && value !==null) {
           url.searchParams.set(key, value ?? '');
-        // }
       });
 
-      // url.search = params.toString();
        console.log("Request URL:", url.toString());
 
       const res = await axios.get(url.toString());
@@ -74,9 +76,14 @@ export const DynamicTable = <T extends Record<string, any>>({
 }, [page, fetchUrl, refreshKey, pageSize, stableParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setPage(0); // Reset to first page when searching
+   const  searchValue = (e.target.value);
+    if (onPageChange) onPageChange(0);
+    else setInternalPage(0); 
   };
+
+  function setPage(arg0: number): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <div>
@@ -108,11 +115,19 @@ export const DynamicTable = <T extends Record<string, any>>({
               <tr key={idx} className={idx % 2 ===0 ? 'even-row' : 'odd-row'}>
                 {columns.map((col) => (
                   <td key={String(col.key)}>
-                    {col.render ? col.render(item) : item[col.key]}
+                    {/* {col.render ? col.render(item) : item[col.key]}
+                  </td> */}
+                  {col.key === "kodeAkun" && item["namaAkun"]
+                      ? `${item["kodeAkun"]} - ${item["namaAkun"]}`
+                      : col.key === "kodeKegiatan" && item["namaKegiatan"]
+                      ? `${item["kodeKegiatan"]} - ${item["namaKegiatan"]}`
+                      : col.render
+                      ? col.render(item)
+                      : item[col.key]}
                   </td>
                 ))}
               
-                  {(onRowUpdate || onRowUpdate) && (
+                  {(onRowDelete || onRowUpdate) && (
                    <td className="action-cells">
                     {onRowUpdate && (
                       <button 
@@ -142,7 +157,11 @@ export const DynamicTable = <T extends Record<string, any>>({
       {totalPages > 1 && (
         <div className="pagination-controls">
           <button 
-            onClick={() => setPage(p => Math.max(0, p - 1))} 
+            onClick={() => {
+              const newPage = Math.max(0, page - 1);
+              onPageChange ? onPageChange(newPage) : setInternalPage(newPage);
+            }} 
+            // setPage(p => Math.max(0, p - 1))} 
             disabled={page === 0 || isLoading}
             className="pagination-btn"
           >
@@ -150,7 +169,11 @@ export const DynamicTable = <T extends Record<string, any>>({
           </button>
           <span className="page-info">Halaman {page + 1} dari {totalPages}</span>
           <button 
-            onClick={() => setPage(p => p + 1)} 
+            onClick={() => {
+              const newPage = page + 1;
+              onPageChange ? onPageChange(newPage) : setInternalPage(newPage);
+            }}
+              // setPage(p => p + 1)} 
             disabled={page >= totalPages - 1 || isLoading}
             className="pagination-btn"
           >

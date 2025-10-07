@@ -24,10 +24,7 @@ ChartJS.register(
 
 interface HistoriSaldoDto {
   tanggal: string;
-  saldoCash?: number;
-  saldoMainBCA?: number;
-  saldoBCADir?: number;
-  saldoPCU?: number;
+  saldo: number;
 }
 
 interface MultiAccountHistoriSaldoChartProps {
@@ -36,7 +33,6 @@ interface MultiAccountHistoriSaldoChartProps {
 }
 
 export const MultiAccountHistoriSaldoChart: React.FC<MultiAccountHistoriSaldoChartProps> = ({ startDate, endDate }) => {
-  const [data, setData] = useState<HistoriSaldoDto[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [cashData, setCashData] = useState<number[]>([]);
   const [mainBcaData, setMainBcaData] = useState<number[]>([]);
@@ -45,24 +41,16 @@ export const MultiAccountHistoriSaldoChart: React.FC<MultiAccountHistoriSaldoCha
 
   useEffect(() => {
     if (!startDate || !endDate) return;
-
-    Promise.all([
-      axios.get(`/buku-utama/histori/cash?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`),
-      axios.get(`/buku-utama/histori/main-bca?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`),
-      axios.get(`/buku-utama/histori/bca-dir?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`),
-      axios.get(`/buku-utama/histori/pcu?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`)
-    ]).then(([cashRes, mainBcaRes, bcaDirRes, pcuRes]) => {
-      const cash = cashRes.data as HistoriSaldoDto[];
-      const mainBca = mainBcaRes.data as HistoriSaldoDto[];
-      const bcaDir = bcaDirRes.data as HistoriSaldoDto[];
-      const pcu = pcuRes.data as HistoriSaldoDto[];
-
-      setLabels(cash.map(item => item.tanggal));
-      setCashData(cash.map(item => item.saldoCash || 0));
-      setMainBcaData(mainBca.map(item => item.saldoMainBCA || 0));
-      setBcaDirData(bcaDir.map(item => item.saldoBCADir || 0));
-      setPcuData(pcu.map(item => item.saldoPCU || 0));
-    }).catch(err => console.error('Gagal ambil data histori:', err));
+      axios.get(`/buku-utama/histori/all?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`)
+      .then((res) => {
+        const data = res.data;
+      setLabels(data.cash.map((item: any) => item.tanggal));
+      setCashData(data.cash.map((item: any) => item.saldoCash || 0));
+      setMainBcaData(data.mainBca.map((item: any) => item.saldoMainBCA || 0));
+      setBcaDirData(data.bcaDir.map((item: any) => item.saldoBCADir || 0));
+      setPcuData(data.pcu.map((item: any) => item.saldoPCU || 0));
+    })
+    .catch(err => console.error('Gagal ambil data histori:', err));
   }, [startDate, endDate]);
 
   const chartData = {

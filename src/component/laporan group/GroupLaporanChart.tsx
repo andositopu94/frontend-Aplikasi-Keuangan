@@ -31,7 +31,7 @@ export const GroupedLaporanChart: React.FC<GroupedLaporanChartProps> = ({ groupT
       .then(res => {
         const result = res.data as any[];
         setLabels(result.map(item => item.nama));
-        setSaldoData(result.map(item => item.saldo));
+        setSaldoData(result.map(item => item.saldo)|| 0);
       })
       .catch(err => console.error('Gagal ambil data:', err));
   }, [groupType, startDate, endDate]);
@@ -40,7 +40,7 @@ export const GroupedLaporanChart: React.FC<GroupedLaporanChartProps> = ({ groupT
     labels: labels,
     datasets: [{
       label: 'saldoData',
-       data,
+       data: saldoData,
       backgroundColor: 'rgba(53, 162, 235, 0.5)',
       borderColor: 'rgba(53, 162, 235, 1)',
       borderWidth: 1
@@ -59,7 +59,11 @@ export const GroupedLaporanChart: React.FC<GroupedLaporanChartProps> = ({ groupT
     scales: {
       y: {
         ticks: {
-          callback: (value: string | number) => `Rp${value.toLocaleString()}`
+          // callback: (value: string | number) => `Rp${value.toLocaleString()}`
+          callback: function(this: any, value: string | number) {
+            const numValue = typeof value === 'string' ? parseFloat(value) : value;
+            return `Rp${numValue.toLocaleString('id-ID')}`;
+          }
         }
       }
     }

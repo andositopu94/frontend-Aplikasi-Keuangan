@@ -29,7 +29,7 @@ export const SaldoChart = () => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/buku-utama/saldo')
+    axios.get('/buku-utama/saldo')
       .then(res => setSaldoData(res.data))
       .catch(err => console.error(err));
   }, []);

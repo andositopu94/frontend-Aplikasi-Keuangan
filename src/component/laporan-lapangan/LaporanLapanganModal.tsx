@@ -23,21 +23,33 @@ export default function LaporanLapanganModal({
         deskripsi: '',
         kodeAkun: '',
         kodeKegiatan: '',
-        namaKegiatan:'',
         debit: 0,
         kredit: 0,
         keterangan: '',
         buktiPath:'',
+        namaUser:'',
     });
 
     const [bukti, setBukti] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [akunList, setAkunList] = useState<{kodeAkun: string; namaAkun: string}[]>([]);
+    const [kegiatanList, setKegiatanList] = useState<{kodeKegiatan: string; namaKegiatan: string}[]>([]);
     
+  useEffect(() => {
+     apiClient.get("/akun?size=100").then((res) => setAkunList(res.data.content));
+     apiClient.get("/kegiatan?size=100").then((res) => setKegiatanList(res.data.content));
+  }, []);
   // Isi form saat mode edit
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      let fixTanggal = "";
+      if (initialData.tanggal) {
+        fixTanggal = initialData.tanggal.split("T")[0];
+      }
+      setFormData({ ...initialData, 
+      tanggal: fixTanggal}
+      );
 
       if (initialData?.buktiPath) {
         setPreviewUrl(`http://localhost:8080/api/laporan-lapangan/files/${initialData.buktiPath}`);
@@ -48,18 +60,18 @@ export default function LaporanLapanganModal({
         kodeLapangan: '',
         deskripsi:'',
         kodeKegiatan: '',
-        namaKegiatan: '',
+        kodeAkun: '',
         debit: 0,
         kredit: 0,
         keterangan:'',
         buktiPath:'',
+        namaUser:'',
       });
         setBukti(null);
         setPreviewUrl(null);
         setError(null);
     }
-},
-[initialData]);
+},[initialData]);
 if (!isOpen) return null;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -87,8 +99,6 @@ if (!isOpen) return null;
         return;
       }
       setBukti(file);
-
-      // ✅ Buat preview URL
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewUrl(reader.result as string);
@@ -101,23 +111,37 @@ if (!isOpen) return null;
     e.preventDefault();
     try {
       const data = new FormData();
-      // Kirim seluruh formData sebagai JSON di part 'request'
-      data.append("request", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+      let fixedFormData: any = { ...formData };
+      
+      if (fixedFormData.tanggal && (fixedFormData.tanggal as string).length === 10) {
+        fixedFormData.tanggal = (fixedFormData.tanggal as string) + "T00:00:00";
+      }
+        if (!fixedFormData.namaUser) {
+          fixedFormData.namaUser = ""; //namauser yang akan diisi dari form
+        }
+      data.append("request", new Blob([JSON.stringify(fixedFormData)], { type: "application/json" }));
       if (bukti) {
         data.append("bukti", bukti);
       }
 
       if (initialData?.id) {
-        await apiClient.put(`/laporan-lapangan/${initialData.id}`, data);
+        await apiClient.put(`/laporan-lapangan/${initialData.id}`, data,{
+          headers: { "Content-Type": "multipart/form-data" }
+        });
         alert("Data berhasil diperbarui");
       } else {
-        await apiClient.post("/laporan-lapangan/upload", data);
+        await apiClient.post("/laporan-lapangan/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
         alert("Data berhasil ditambahkan");
       }
+      
       onSuccess();
       onClose();
     } catch (error: any) {
-      alert("Gagal menyimpan: " + error.message);
+      console.error("Gagal menyimpan laporan", error);
+      const msg = error?.response?.data || error?.message || "Terjadi kesalahan saat menyimpan laporan";
+      alert("Gagal menyimpan: " + JSON.stringify(msg));
     }
   };
 
@@ -146,6 +170,21 @@ if (!isOpen) return null;
               onChange={handleChange}
               required
             />
+          </div>
+          <div>
+            <label>Kode Akun</label>
+            <select
+              name="kodeAkun"
+              value={formData.kodeAkun || ""}
+              onChange={handleChange}
+              required>
+                <option value="">-- Pilih Akun --</option>
+                {akunList.map((a) => (
+                  <option key={a.kodeAkun} value={a.kodeAkun}>
+                    {a.kodeAkun} - {a.namaAkun}
+                  </option>
+                ))}
+              </select>
           </div>
           <div>
             <label>Deskripsi</label>
@@ -184,14 +223,21 @@ if (!isOpen) return null;
           </div>
           <div>
             <label>Kode Kegiatan</label>
-            <input
-              type="text"
+            <select
               name="kodeKegiatan"
               value={formData.kodeKegiatan || ""}
               onChange={handleChange}
-            />
+              required
+            >
+              <option value="">---Pilih Kegiatan---</option>
+              {kegiatanList.map((k) => (
+                <option key={k.kodeKegiatan} value={k.kodeKegiatan}>
+                  {k.kodeKegiatan} – {k.namaKegiatan}
+                </option>
+              ))}
+            </select>
           </div>
-          <div>
+          {/* <div>
             <label>Nama Kegiatan</label>
             <input
               type="text"
@@ -199,6 +245,11 @@ if (!isOpen) return null;
               value={formData.namaKegiatan || ""}
               onChange={handleChange}
             />
+          </div> */}
+          <div>
+            <label>Nama User</label>
+            <input type="text" name="namaUser" value={formData.namaUser||''}
+            onChange={handleChange} />
           </div>
           <div>
           <label>Upload Bukti</label>
