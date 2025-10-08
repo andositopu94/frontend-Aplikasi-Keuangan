@@ -49,18 +49,6 @@ export default function Dashboard() {
           <button style={buttonStyle}>LAPORAN LAPANGAN</button>
         </Link>
       </div>
-
-      {/* Tombol Export */}
-      {/* <LaporanExportButton startDate={startDate} endDate={endDate} /> */}
-      
-      {/* Filter Tanggal */}
-      {/* <DateRangeFilter onApply={handleDateApply} /> */}
-      {/* <div style={{ marginBottom: '20px' }}>
-        <label>Tanggal Awal: </label>
-        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-        <label style={{ marginLeft: '10px' }}>Tanggal Akhir: </label>
-        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-      </div> */}
       
       <LaporanGroupByAkun/>
 

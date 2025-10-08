@@ -10,6 +10,7 @@ import {
   Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import apiClient from '../services/api';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -29,7 +30,7 @@ export const SaldoChart = () => {
   });
 
   useEffect(() => {
-    axios.get('/buku-utama/saldo')
+    apiClient.get('/buku-utama/saldo')
       .then(res => setSaldoData(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -66,7 +67,7 @@ export const SaldoChart = () => {
         ticks: {
           callback: (tickValue: string | number) => {
             const value = typeof tickValue === 'string' ? parseInt(tickValue) : tickValue;
-            return `Rp${value?.toLocaleString()}`;
+            return `Rp${value?.toLocaleString('id-ID')}`;
           }
         }
       }

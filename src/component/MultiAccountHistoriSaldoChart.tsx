@@ -11,6 +11,8 @@ import {
   Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import apiClient from '../services/api';
+import { HistoriSaldoDto } from '../types/HistoriSaldoDto'
 
 ChartJS.register(
   CategoryScale,
@@ -21,11 +23,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-interface HistoriSaldoDto {
-  tanggal: string;
-  saldo: number;
-}
 
 interface MultiAccountHistoriSaldoChartProps {
   startDate: string;
@@ -41,14 +38,21 @@ export const MultiAccountHistoriSaldoChart: React.FC<MultiAccountHistoriSaldoCha
 
   useEffect(() => {
     if (!startDate || !endDate) return;
-      axios.get(`/buku-utama/histori/all?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`)
+      apiClient.get('/buku-utama/histori/all', {
+        params: { tanggalAwal: startDate, tanggalAkhir: endDate },
+      })
       .then((res) => {
         const data = res.data;
-      setLabels(data.cash.map((item: any) => item.tanggal));
-      setCashData(data.cash.map((item: any) => item.saldoCash || 0));
-      setMainBcaData(data.mainBca.map((item: any) => item.saldoMainBCA || 0));
-      setBcaDirData(data.bcaDir.map((item: any) => item.saldoBCADir || 0));
-      setPcuData(data.pcu.map((item: any) => item.saldoPCU || 0));
+        const cash = data.cash || [];
+        const mainBca = data.mainBca || [];
+        const bcaDir = data.bcaDir || [];
+        const pcu = data.pcu || [];
+
+        setLabels(cash.map((item: HistoriSaldoDto) => item.tanggal));
+        setCashData(cash.map((item: HistoriSaldoDto) => item.saldoCash || 0));
+        setMainBcaData(mainBca.map((item: HistoriSaldoDto) => item.saldoMainBCA || 0));
+        setBcaDirData(bcaDir.map((item: HistoriSaldoDto) => item.saldoBCADir || 0));
+        setPcuData(pcu.map((item: HistoriSaldoDto) => item.saldoPCU || 0));
     })
     .catch(err => console.error('Gagal ambil data histori:', err));
   }, [startDate, endDate]);
@@ -102,7 +106,7 @@ export const MultiAccountHistoriSaldoChart: React.FC<MultiAccountHistoriSaldoCha
         ticks: {
           callback: (tickValue: string | number) => {
             const value=typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue;
-           return `Rp${value.toLocaleString()}`;
+           return `Rp${value.toLocaleString('id-ID')}`;
         }
         }
       }
