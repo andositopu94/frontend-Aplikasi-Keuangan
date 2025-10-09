@@ -11,6 +11,7 @@ import {
   Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import apiClient from '../services/api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -31,7 +32,7 @@ export const HistoriSaldoLineChart: React.FC<HistoriSaldoLineChartProps> = ({ st
   useEffect(() => {
     if (!startDate || !endDate) return;
 
-    axios.get(`/api/buku-utama/histori/cash?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`)
+    apiClient.get(`/buku-utama/histori/cash?tanggalAwal=${startDate}&tanggalAkhir=${endDate}`)
       .then(res => {
         const result = res.data as HistoriSaldoDto[];
         setLabels(result.map(item => item.tanggal));

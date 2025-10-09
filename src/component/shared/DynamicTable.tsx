@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TableColumn } from '../../types/TableColumn';
-import '../layout/BukuList.css';
+// import '../layout/BukuList.css';
 import BukuUtamaList from '../buku-utama/BukuUtamaList';
 
 interface DynamicTableProps<T> {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -37,7 +36,10 @@ export const MultiAccountHistoriSaldoChart: React.FC<MultiAccountHistoriSaldoCha
   const [pcuData, setPcuData] = useState<number[]>([]);
 
   useEffect(() => {
-    if (!startDate || !endDate) return;
+    // if (!startDate || !endDate) return;
+    const tanggalAwal= startDate || '2025-01-01';
+    const tanggalAkhir= endDate || new Date().toISOString().split('T')[0];
+    
       apiClient.get('/buku-utama/histori/all', {
         params: { tanggalAwal: startDate, tanggalAkhir: endDate },
       })
