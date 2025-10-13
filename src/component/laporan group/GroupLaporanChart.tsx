@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
-import { data } from 'react-router-dom';
+// import { data } from 'react-router-dom';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

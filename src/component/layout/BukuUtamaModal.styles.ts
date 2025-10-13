@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
 export const modalOverlayStyle: CSSProperties = {
-  position: 'fixed',
+  position: 'fixed' as const,
   top: 0,
   left: 0,
   right: 0,
@@ -15,16 +15,16 @@ export const modalOverlayStyle: CSSProperties = {
   padding: '20px'
 };
 
-export const modalContentStyle: CSSProperties = {
-  backgroundColor: '#fff',
+export const modalContentStyle:CSSProperties = {
+  backgroundColor: 'white',
   padding: '32px',
   borderRadius: '16px',
   width: '90%',
   maxWidth: '800px',
   maxHeight: '90vh',
-  overflowY: 'auto',
+  overflowY: 'auto' as const,
   boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  border: '1px solid var(--border-color)'
+  border: '1px solid #e2e8f0'
 };
 
 export const gridStyle: CSSProperties = {
@@ -33,6 +33,7 @@ export const gridStyle: CSSProperties = {
   gap: '20px',
   marginBottom: '24px'
 };
+
 
 export const cancelButtonStyle: CSSProperties = {
   backgroundColor: 'transparent',

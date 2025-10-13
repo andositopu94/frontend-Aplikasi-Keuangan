@@ -16,4 +16,5 @@ export interface BukuUtamaDto {
     namaAkun: string;
     kodeKegiatan: string;
     namaKegiatan: string;
+    aksi?: never;
 }

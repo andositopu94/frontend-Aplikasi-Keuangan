@@ -3,7 +3,6 @@ import { LaporanLapanganRequest } from "../../types/LaporanLapanganRequest";
 import apiClient from "../../services/api";
 import { modalOverlayStyle, modalContentStyle, gridStyle } from "../layout/BukuUtamaModal.styles";
 
-
 export default function LaporanLapanganForm({ isOpen, onClose, onSuccess, initialData }: any) {
   const [formData, setFormData] = useState<Partial<LaporanLapanganRequest>>(initialData || {
     tanggal: "",
