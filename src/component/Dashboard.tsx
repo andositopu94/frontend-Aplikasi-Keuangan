@@ -188,44 +188,91 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-4 gap-6 mb-8">
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">Total Saldo</div>
-          <div className="text-2xl font-bold text-blue-600">
-            Rp{totalSaldo.toLocaleString("id-ID")}
-          </div>
-        </div>
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">Cash</div>
-          <div className="text-2xl font-bold text-green-600">
-            Rp{(saldoData.Cash || 0).toLocaleString("id-ID")}
-          </div>
-        </div>
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">Main BCA</div>
-          <div className="text-2xl font-bold text-blue-600">
-            Rp{(saldoData.MainBCA || 0).toLocaleString("id-ID")}
-          </div>
-        </div>
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">BCADir</div>
-          <div className="text-2xl font-bold text-blue-600">
-            Rp{(saldoData.BCA_Dir || 0).toLocaleString("id-ID")}
-          </div>
-        </div>
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">PCU</div>
-          <div className="text-2xl font-bold text-blue-600">
-            Rp{(saldoData.PCU || 0).toLocaleString("id-ID")}
-          </div>
-        </div>
-        <div className="card text-center card-hover">
-          <div className="text-gray-500 text-sm mb-2">Transaksi</div>
-          <div className="text-2xl font-bold text-purple-600">
-            {recentActivity.length}
-          </div>
-        </div>
+<div className="grid grid-cols-3 gap-6 mb-8">
+  {/* Total Saldo */}
+  <div className="stats-card total-saldo">
+    <div className="stats-icon">
+      <span className="icon">💰</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">Total Saldo</div>
+      <div className="stats-value">Rp{totalSaldo.toLocaleString("id-ID")}</div>
+      <div className="stats-trend">
+        <span className="trend-up">↗️ Overall</span>
       </div>
+    </div>
+  </div>
+
+  {/* Cash */}
+  <div className="stats-card cash">
+    <div className="stats-icon">
+      <span className="icon">💵</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">Cash</div>
+      <div className="stats-value">Rp{(saldoData.Cash || 0).toLocaleString("id-ID")}</div>
+      <div className="stats-trend">
+        <span className="trend-up">+2.5%</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Main BCA */}
+  <div className="stats-card main-bca">
+    <div className="stats-icon">
+      <span className="icon">🏦</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">Main BCA</div>
+      <div className="stats-value">Rp{(saldoData.MainBCA || 0).toLocaleString("id-ID")}</div>
+      <div className="stats-trend">
+        <span className="trend-up">+1.8%</span>
+      </div>
+    </div>
+  </div>
+
+  {/* BCA Dir */}
+  <div className="stats-card bca-dir">
+    <div className="stats-icon">
+      <span className="icon">💳</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">BCA Dir</div>
+      <div className="stats-value">Rp{(saldoData.BCA_Dir || 0).toLocaleString("id-ID")}</div>
+      <div className="stats-trend">
+        <span className="trend-neutral">→ Stable</span>
+      </div>
+    </div>
+  </div>
+
+  {/* PCU */}
+  <div className="stats-card pcu">
+    <div className="stats-icon">
+      <span className="icon">🔄</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">PCU</div>
+      <div className="stats-value">Rp{(saldoData.PCU || 0).toLocaleString("id-ID")}</div>
+      <div className="stats-trend">
+        <span className="trend-down">-0.5%</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Transaksi */}
+  <div className="stats-card transactions">
+    <div className="stats-icon">
+      <span className="icon">📊</span>
+    </div>
+    <div className="stats-content">
+      <div className="stats-label">Total Transaksi</div>
+      <div className="stats-value">{recentActivity.length}</div>
+      <div className="stats-trend">
+        <span className="trend-up">Today</span>
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Menu Utama */}
       <div className="mb-8">
@@ -296,7 +343,6 @@ export default function Dashboard() {
       {/* Histori Saldo */}
       <div className="card mb-8" style={{ marginBottom: "16px" }}>
         <h3 style={{ marginBottom: "12px", fontSize: "18px", fontWeight: '600' }}>Histori Saldo Semua Rekening</h3>
-        {/* ✅ Fix: tambahkan props startDate & endDate */}
         <MultiAccountHistoriSaldoChart
           startDate={startDate}
           endDate={endDate}
