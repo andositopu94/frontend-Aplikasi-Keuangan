@@ -20,177 +20,79 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
   ];
 
   return (
-    <header style={{
-      backgroundColor: 'white',
-      borderBottom: '1px solid var(--border-color)',
-      padding: '0',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      boxShadow: 'var(--shadow)'
-    }}>
+    <header>
       {/* Top Bar */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        padding: '16px 24px',
-        borderBottom: '1px solid var(--border-color)'
-      }}>
-        {/* Left Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div className="header-top">
+        <div className="header-left">
           <button
             onClick={onMenuToggle}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '20px',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '8px',
-              display: 'none'
-            }}
-            className="mobile-only"
+            className="menu-toggle"
+            title="Toggle Menu"
           >
             ☰
           </button>
           
           {title && (
-            <h1 style={{ 
-              fontSize: '24px', 
-              fontWeight: '700',
-              color: 'var(--text-primary)'
-            }}>
+            <h1 className="header-title">
               {title}
             </h1>
           )}
         </div>
 
-        {/* Right Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="header-right">
           {/* Notifications */}
-          <button style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '20px',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '8px',
-            position: 'relative',
-            transition: 'background-color 0.2s ease'
-          }}>
-            🔔
-            <span style={{
-              position: 'absolute',
-              top: '6px',
-              right: '6px',
-              width: '8px',
-              height: '8px',
-              backgroundColor: 'var(--error-color)',
-              borderRadius: '50%'
-            }} />
+          <button className="notification-btn">
+            <span>🔔</span>
+            <span className="notification-badge"></span>
           </button>
 
           {/* User Menu */}
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                transition: 'background-color 0.2s ease'
-              }}
+              className="user-menu-btn"
             >
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--primary-color)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: '14px'
-              }}>
-                U
+              <div className="flex gap-3 items-center">
+                <div className="user-avatar">
+                  U
+                </div>
+                <div className="user-info">
+                  <div className="user-name">User Admin</div>
+                  <div className="user-role">Administrator</div>
+                </div>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>▼</span>
               </div>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: '600', fontSize: '14px' }}>User Admin</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Administrator</div>
-              </div>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>▼</span>
             </button>
 
             {/* Dropdown Menu */}
             {showUserMenu && (
-              <div style={{
+              <div className="card" style={{
                 position: 'absolute',
                 top: '100%',
                 right: 0,
-                backgroundColor: 'white',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                boxShadow: 'var(--shadow-lg)',
-                padding: '8px 0',
                 minWidth: '200px',
-                marginTop: '8px'
+                marginTop: '8px',
+                zIndex: 1000
               }}>
                 <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)' }}>
-                  <div style={{ fontWeight: '600', fontSize: '14px' }}>User Administrator</div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>admin@finance.com</div>
+                  <div className="user-name">User Administrator</div>
+                  <div className="user-role">admin@finance.com</div>
                 </div>
                 <Link 
                   to="/profile" 
-                  style={{
-                    display: 'block',
-                    padding: '12px 16px',
-                    textDecoration: 'none',
-                    color: 'var(--text-primary)',
-                    fontSize: '14px',
-                    transition: 'background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-color)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  className="sidebar-item"
+                  style={{ margin: '4px 0', borderRadius: '8px' }}
                 >
                   👤 Profile Settings
                 </Link>
                 <Link 
                   to="/settings" 
-                  style={{
-                    display: 'block',
-                    padding: '12px 16px',
-                    textDecoration: 'none',
-                    color: 'var(--text-primary)',
-                    fontSize: '14px',
-                    transition: 'background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-color)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  className="sidebar-item"
+                  style={{ margin: '4px 0', borderRadius: '8px' }}
                 >
                   ⚙️ System Settings
                 </Link>
-                <button style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '12px 16px',
-                  background: 'none',
-                  border: 'none',
-                  borderTop: '1px solid var(--border-color)',
-                  color: 'var(--error-color)',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-color)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
+                <button className="logout-btn" style={{ margin: '8px 0', width: '100%' }}>
                   🚪 Logout System
                 </button>
               </div>
@@ -200,36 +102,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
       </div>
 
       {/* Navigation Menu */}
-      <div style={{
-        padding: '0 24px',
-        display: 'flex',
-        gap: '8px',
-        overflowX: 'auto',
-        scrollbarWidth: 'none',
-        msOverflowStyle: 'none'
-      }}>
+      <div className="header-nav">
         {navigationItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px 16px',
-                textDecoration: 'none',
-                color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)',
-                backgroundColor: isActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent',
-                borderRadius: '8px',
-                fontWeight: isActive ? '600' : '500',
-                fontSize: '14px',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease',
-                border: isActive ? '1px solid var(--primary-color)' : '1px solid transparent',
-                margin: '8px 0'
-              }}
+              className={`nav-item ${isActive ? 'active' : ''}`}
             >
               <span style={{ fontSize: '16px' }}>{item.icon}</span>
               <span>{item.label}</span>

@@ -149,7 +149,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding: "0", margin: "0" }} className="fade-in">
-      {/* Banner Selamat Datang */}
+      
       <div
         className="card mb-6"
         style={{
@@ -208,6 +208,18 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card text-center card-hover">
+          <div className="text-gray-500 text-sm mb-2">BCADir</div>
+          <div className="text-2xl font-bold text-blue-600">
+            Rp{(saldoData.BCA_Dir || 0).toLocaleString("id-ID")}
+          </div>
+        </div>
+        <div className="card text-center card-hover">
+          <div className="text-gray-500 text-sm mb-2">PCU</div>
+          <div className="text-2xl font-bold text-blue-600">
+            Rp{(saldoData.PCU || 0).toLocaleString("id-ID")}
+          </div>
+        </div>
+        <div className="card text-center card-hover">
           <div className="text-gray-500 text-sm mb-2">Transaksi</div>
           <div className="text-2xl font-bold text-purple-600">
             {recentActivity.length}
@@ -224,6 +236,10 @@ export default function Dashboard() {
           Menu Utama
         </h2>
         <div className="grid grid-cols-4 gap-6">
+          {quickActions.map((item, index) => (
+            <QuickActionCard key={index} {...item} />
+          ))}
+        {/* <div className="grid grid-cols-4 gap-6">
         <div
           style={{
             display: "grid",
@@ -234,10 +250,10 @@ export default function Dashboard() {
             {quickActions.map((item, index) => (
             <QuickActionCard key={index} {...item} />
           ))}
-          </div>
+          </div> */}
           
         
-          <div className="card p-4 text-center">
+          {/* <div className="card p-4 text-center">
             <h3>Buku Utama</h3>
             <p>Kelola transaksi keuangan dan lihat saldo terkini</p>
           </div>
@@ -252,20 +268,14 @@ export default function Dashboard() {
           <div className="card p-4 text-center">
             <h3>Laporan Lapangan</h3>
             <p>Input aktivitas lapangan dengan bukti foto</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
-      {/* Statistik Saldo */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "16px",
-          marginBottom: "16px",
-        }}
-      >
-
+        {/* Laporan Akun */}
+      <div className="card">
+        <LaporanGroupByAkun />
+      </div>
         <div className="grid grid-cols-2 gap-6 mb-8"></div>
         <div className="card">
           <h3 style={{ marginBottom: "12px" , fontSize: '18px', fontWeight: '600' }}>Saldo Terkini</h3>
@@ -292,13 +302,8 @@ export default function Dashboard() {
           endDate={endDate}
         />
       </div>
-
-      {/* Laporan Akun */}
-      <div className="card">
-        <LaporanGroupByAkun />
-      </div>
     </div>
-  </div>
+  // </div>
   );
 }
 

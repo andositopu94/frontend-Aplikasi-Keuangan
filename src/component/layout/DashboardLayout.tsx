@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+// src/component/layout/DashboardLayout.tsx
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../layout/sidebar";
 import { Header } from "../layout/Header";
-import "../layout/global.css";
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -16,14 +16,15 @@ export default function DashboardLayout() {
       }
     };
 
-    handleResize(); // Set initial state
+    handleResize();
     window.addEventListener('resize', handleResize);
     
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)};
+    setSidebarOpen(!sidebarOpen);
+  };
 
   return (
     <div className="app-container">
@@ -31,7 +32,6 @@ export default function DashboardLayout() {
       <div className="main-content">
         <Header
           onMenuToggle={toggleSidebar}
-          // {() => setSidebarOpen(!sidebarOpen)}
           title="Sistem Keuangan"
         />
         <div className="page-container">
