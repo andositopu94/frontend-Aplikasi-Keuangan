@@ -1,6 +1,7 @@
 import { useState } from "react";
 import apiClient from "../../services/api";
 import { Download } from "lucide-react";
+import "../layout/global.css";
 
 export default function LaporanExportButton() {
   const today = new Date().toISOString().split("T")[0];
@@ -44,48 +45,112 @@ export default function LaporanExportButton() {
   };
 
  return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
-      <h3 className="text-lg font-semibold mb-4">Export Laporan</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div>
-          <label className="block text-sm text-gray-600 dark:text-gray-300 mb-2">Tanggal Awal</label>
+   <div className="card mb-6" style={{ 
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'white',
+    border: 'none'
+    }}>
+    <div className="flex-between items-center">
+      <div>
+      <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '4px', color:'white' }}>📈 Export Laporan</h3>
+      <p style={{ 
+        opacity: 0.9, 
+        fontSize: '14px',
+        color: 'rgba(255,255,255,0.9)'
+      }}>
+        Download laporan keuangan dalam format Excel atau PDF
+      </p>
+      </div>
+    </div>  
+
+      <div className="export-date-range">
+        <div className="date-input-group">
+          <div className="date-input">
+          <label style={{ 
+            display: 'block',
+            fontSize: '12px',
+            fontWeight: '600',
+            marginBottom: '6px',
+            color: 'rgba(255,255,255,0.9)'
+          }}>Tanggal Awal</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+            className="date-picker"
           />
         </div>
 
-        <div>
-          <label className="block text-sm text-gray-600 dark:text-gray-300 mb-2">Tanggal Akhir</label>
+        <div className="date-input">
+          <label style={{ 
+            display: 'block',
+            fontSize: '12px',
+            fontWeight: '600',
+            marginBottom: '8px',
+            color: 'rgba(255,255,255,0.9)'}}>Tanggal Akhir</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+            className="date-picker"
           />
         </div>
+      </div>
 
+      <div className="flex gap-3" style={{ justifyContent: 'flex-start' }}>
         <button
+          className='btn-export excel'
           onClick={() => handleExport("excel")}
           disabled={loading}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition disabled:opacity-50"
+          style={{ opacity: loading ? 0.6 : 1, 
+                   cursor: loading ? 'not-allowed' : 'pointer'
+           }}
+           onMouseOver={(e) => {
+            if (!loading) {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!loading) {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+            }
+          }}
         >
+          <span className="export-icon">📊</span>
           <Download size={16} />
-          Export Excel
+          {loading ? 'Loading...' : 'Export Excel'}
+          {/* Export Excel */}
         </button>
 
         <button
           onClick={() => handleExport("pdf")}
           disabled={loading}
-          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition disabled:opacity-50"
+          className="btn-export pdf"
+          style={{ cursor: loading ? 'not-allowed' : 'pointer',
+                   opacity: loading ? 0.6 : 1
+           }}
+           onMouseOver={(e) => {
+            if (!loading) {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(239, 68, 68, 0.4)';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!loading) {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
+            }
+          }}
         >
           <Download size={16} />
-          Export PDF
+          <span className="export-icon">📄</span>
+          {/* Export PDF */}
+          {loading ? 'Loading...' : 'Export PDF'}
         </button>
       </div>
     </div>
+  </div>
   );
 }

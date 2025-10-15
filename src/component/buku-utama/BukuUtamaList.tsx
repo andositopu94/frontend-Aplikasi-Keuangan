@@ -196,18 +196,14 @@ export default function BukuUtamaList() {
       key: "sumberRekening",
       label: "Sumber Rekening",
       render: (item) => (
-        <div style={{ fontSize: "14px" }}>
-          {item.sumberRekening || "-"}
-        </div>
+        <div style={{ fontSize: "14px" }}>{item.sumberRekening || "-"}</div>
       ),
     },
     {
       key: "rekeningTujuan",
       label: "Rekening Tujuan",
       render: (item) => (
-        <div style={{ fontSize: "14px" }}>
-          {item.rekeningTujuan || "-"}
-        </div>
+        <div style={{ fontSize: "14px" }}>{item.rekeningTujuan || "-"}</div>
       ),
     },
     {
@@ -250,13 +246,13 @@ export default function BukuUtamaList() {
       key: "deskripsi",
       label: "Deskripsi",
       render: (item) => (
-        <div 
-          style={{ 
+        <div
+          style={{
             fontSize: "14px",
             maxWidth: "200px",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
           }}
           title={item.deskripsi} // Show full text on hover
         >
@@ -314,16 +310,27 @@ export default function BukuUtamaList() {
   };
 
   return (
-    <div className="page-content">
-      <div className="card mb-6">
-        {/* Header Section */}
-        <div className="flex-between mb-6">
+    <div>
+      <div
+        className="card mb-6 "
+        style={{
+          background:
+            "linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%)",
+          color: "white",
+          border: "none",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div className="header-background-pattern"></div>
+        <div className="flex-between mb-6 relative z-10">
           <div>
             <h1
               style={{
                 fontSize: "28px",
                 fontWeight: "700",
                 marginBottom: "8px",
+                color: "white",
               }}
             >
               Buku Utama
@@ -341,52 +348,59 @@ export default function BukuUtamaList() {
             Tambah Transaksi
           </button>
         </div>
+      </div>
 
-        {/* Export Section */}
-        <LaporanExportButton />
+      {/* Export Section */}
+      <LaporanExportButton />
 
-        {/* Filter dan Pencarian */}
-        <div
-          className="card"
-          style={{ backgroundColor: "#f8fafc", marginTop: "20px" }}
-        >
-          <div className="flex-between">
-            <div style={{ flex: 1, maxWidth: "400px" }}>
-              <div className="form-group">
-                <div className="form-label">Cari Data</div>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Cari berdasarkan deskripsi, kode transaksi..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{ background: "white" }}
-                />
-              </div>
+      {/* Filter dan Pencarian */}
+      <div
+        className="card"
+        style={{ backgroundColor: "#f8fafc", marginTop: "20px" }}
+      >
+        <div className="flex-between">
+          <div style={{ flex: 1, maxWidth: "400px" }}>
+            <div className="form-group">
+              <div className="form-label">Cari Data</div>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Cari berdasarkan deskripsi, kode transaksi..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ background: "white" }}
+              />
             </div>
+          </div>
 
-            <div style={{ flex: 1, maxWidth: "300px" }}>
-              <div className="form-group">
-                <div className="form-label">Filter Jenis Rekening</div>
-                <select
-                  className="form-select"
-                  value={jenisRekeningFilter}
-                  onChange={(e) => setJenisRekeningFilter(e.target.value)}
-                  style={{ background: "white" }}
-                >
-                  <option value="">Semua Jenis Rekening</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Main BCA">Main BCA</option>
-                  <option value="BCA Dir">BCA Dir</option>
-                  <option value="PCU">PCU</option>
-                </select>
-              </div>
+          <div style={{ flex: 1, maxWidth: "300px" }}>
+            <div className="form-group">
+              <div className="form-label">Filter Jenis Rekening</div>
+              <select
+                className="form-select"
+                value={jenisRekeningFilter}
+                onChange={(e) => setJenisRekeningFilter(e.target.value)}
+                style={{ background: "white" }}
+              >
+                <option value="">Semua Jenis Rekening</option>
+                <option value="Cash">Cash</option>
+                <option value="Main BCA">Main BCA</option>
+                <option value="BCA Dir">BCA Dir</option>
+                <option value="PCU">PCU</option>
+              </select>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      {/* <div
+        className="grid grid-cols-5 gap-4 mb-6"
+        style={{
+          display: "grid",
+          gridTemplate: "repeat(5,1fr)",
+          gap: "16px",
+        }}
+      >
         <div className="stats-card total-data">
           <div className="stats-icon">
             <span className="icon">📊</span>
@@ -456,6 +470,83 @@ export default function BukuUtamaList() {
               <span className="trend-down">
                 {calculatePercent(pcuCount, totalData)}%
               </span>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="stats-horizontal-container mb-6">
+        <div className="stats-row">
+          <div className="stats-card-horizontal total-data">
+            <div className="stats-icon-horizontal">
+              <span className="icon">📊</span>
+            </div>
+            <div className="stats-content-horizontal">
+              <div className="stats-value-horizontal">{totalData}</div>
+              <div className="stats-label-horizontal">Total Data</div>
+              <div className="stats-trend-horizontal">
+                <span className="trend-up">All Records</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card-horizontal cash">
+            <div className="stats-icon-horizontal">
+              <span className="icon">💵</span>
+            </div>
+            <div className="stats-content-horizontal">
+              <div className="stats-value-horizontal">{cashCount}</div>
+              <div className="stats-label-horizontal">Cash</div>
+              <div className="stats-trend-horizontal">
+                <span className="trend-up">
+                  {calculatePercent(cashCount, totalData)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card-horizontal main-bca">
+            <div className="stats-icon-horizontal">
+              <span className="icon">🏦</span>
+            </div>
+            <div className="stats-content-horizontal">
+              <div className="stats-value-horizontal">{mainBcaCount}</div>
+              <div className="stats-label-horizontal">Main BCA</div>
+              <div className="stats-trend-horizontal">
+                <span className="trend-up">
+                  {calculatePercent(mainBcaCount, totalData)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card-horizontal bca-dir">
+            <div className="stats-icon-horizontal">
+              <span className="icon">💳</span>
+            </div>
+            <div className="stats-content-horizontal">
+              <div className="stats-value-horizontal">{bcaDirCount}</div>
+              <div className="stats-label-horizontal">BCA Dir</div>
+              <div className="stats-trend-horizontal">
+                <span className="trend-neutral">
+                  {calculatePercent(bcaDirCount, totalData)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card-horizontal pcu">
+            <div className="stats-icon-horizontal">
+              <span className="icon">🔄</span>
+            </div>
+            <div className="stats-content-horizontal">
+              <div className="stats-value-horizontal">{pcuCount}</div>
+              <div className="stats-label-horizontal">PCU</div>
+              <div className="stats-trend-horizontal">
+                <span className="trend-down">
+                  {calculatePercent(pcuCount, totalData)}%
+                </span>
+              </div>
             </div>
           </div>
         </div>
