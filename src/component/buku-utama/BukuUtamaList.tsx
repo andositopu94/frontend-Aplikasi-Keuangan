@@ -335,7 +335,7 @@ export default function BukuUtamaList() {
             >
               Buku Utama
             </h1>
-            <p style={{ color: "var(--text-secondary)" }}>
+            <p style={{ color: 'white' }}>
               Kelola semua transaksi keuangan dalam satu tempat
             </p>
           </div>
