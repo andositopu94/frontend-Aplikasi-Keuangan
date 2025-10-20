@@ -28,6 +28,7 @@ export default function BukuUtamaList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data, setData] = useState<BukuUtamaDto[]>([]);
+  const userRole = localStorage.getItem("userRole") || "USER";
 
   const fetchData = () => {
     setIsLoading(true);
@@ -72,6 +73,9 @@ export default function BukuUtamaList() {
   };
 
   const handleDelete = (id: string) => {
+    if (userRole !== "SUPERVISI") {
+      alert("Anda tidak memiliki izin untuk menghapus data.");
+    }
     if (window.confirm("Apakah Anda Yakin Menghapus Data ini?")) {
       apiClient
         .delete(`/buku-utama/${id}`)
@@ -276,6 +280,7 @@ export default function BukuUtamaList() {
       label: "Aksi",
       render: (item) => (
         <div className="flex gap-2">
+          {(userRole === "ADMIN" || userRole === "SUPERVISI") && (
           <button
             className="btn btn-outline btn-sm flex items-center gap-2"
             onClick={() => handleEdit(item)}
@@ -284,6 +289,9 @@ export default function BukuUtamaList() {
             <Edit size={14} />
             Edit
           </button>
+          )}
+          {
+            userRole === "SUPERVISI" && (  
           <button
             className="btn btn-danger btn-sm flex items-center gap-2"
             onClick={() => handleDelete(item.traceNumber)}
@@ -292,6 +300,7 @@ export default function BukuUtamaList() {
             <Trash2 size={14} />
             Hapus
           </button>
+            )}
         </div>
       ),
     },
@@ -339,14 +348,6 @@ export default function BukuUtamaList() {
               Kelola semua transaksi keuangan dalam satu tempat
             </p>
           </div>
-          <button
-            className="btn btn-primary flex items-center gap-2"
-            onClick={handleCreate}
-            disabled={isLoading}
-          >
-            <span>➕</span>
-            Tambah Transaksi
-          </button>
         </div>
       </div>
 
@@ -389,6 +390,14 @@ export default function BukuUtamaList() {
                 <option value="PCU">PCU</option>
               </select>
             </div>
+            <button style={{ display: 'flex', position: 'relative' }}
+            className="btn btn-primary flex items-center gap-2"
+            onClick={handleCreate}
+            disabled={isLoading}
+          >
+            <span>➕</span>
+            Tambah Transaksi
+          </button>
           </div>
         </div>
       </div>
@@ -589,13 +598,14 @@ export default function BukuUtamaList() {
       </div>
 
       {/* Modal */}
+      {(userRole === "ADMIN" || userRole === "SUPERVISI") && (
       <BukuUtamaModal
         isOpen={isModalOpen}
         onClose={handleClose}
         onSuccess={handleSuccess}
         initialData={selectedItem}
       />
-
+      )}
       <style>{`@keyframes spin {
           0% {transform:rotate(0deg);}
           100% {transform: rotate(360deg);}}`}</style>

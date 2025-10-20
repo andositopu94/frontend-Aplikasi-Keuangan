@@ -1,5 +1,5 @@
 export interface LaporanGroupDto {
-    tanggal: string;
+    // tanggal: string;
     kode: string;
     nama: string;
     totalMasuk: number;

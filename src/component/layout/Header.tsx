@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../layout/global.css';
+import { LogOut } from 'lucide-react';
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -10,6 +11,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
@@ -18,6 +20,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
     { path: '/uang-keluar', label: 'Uang Keluar', icon: '💸' },
     { path: '/laporan-lapangan', label: 'Laporan Lapangan', icon: '📋' },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userRole');
+    navigate('/login', { replace: true });
+  };
+
+  const activeLabel = navigationItems.find(item => item.path === location.pathname)?.label || 'Unknown';
 
   return (
     <header>
@@ -82,6 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
                   to="/profile" 
                   className="sidebar-item"
                   style={{ margin: '4px 0', borderRadius: '8px' }}
+                  onClick={() => setShowUserMenu(false)}
                 >
                   👤 Profile Settings
                 </Link>
@@ -89,11 +100,15 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
                   to="/settings" 
                   className="sidebar-item"
                   style={{ margin: '4px 0', borderRadius: '8px' }}
+                  onClick={() => setShowUserMenu(false)}
                 >
                   ⚙️ System Settings
                 </Link>
-                <button className="logout-btn" style={{ margin: '8px 0', width: '100%' }}>
-                  🚪 Logout System
+                <button className="logout-btn" style={{ margin: '4px 0', borderRadius:'8px', width: '100%', textAlign:'left', cursor:'pointer' }}
+                  onClick={handleLogout} 
+                  >
+                  <LogOut size={18} style={{ marginRight:'8px' }} />
+                   🚪 Logout System
                 </button>
               </div>
             )}

@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  NotebookPen
 } from "lucide-react";
 import "../../component/layout/global.css";
 import { title } from "process";
@@ -28,7 +29,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     { title: "Buku Utama", icon: <BookOpen size={20} />, path: "/buku-utama" },
     { title: "Uang Masuk", path: "/uang-masuk", icon: <ArrowDownCircle size={20} /> },
     { title: "Uang Keluar", path: "/uang-keluar", icon: <ArrowUpCircle size={20} /> },
-    { title: "Laporan Lapangan", icon: <FileSpreadsheet size={20} />, path: "/laporan-lapangan" }
+    { title: "Laporan Lapangan", icon: <FileSpreadsheet size={20} />, path: "/laporan-lapangan" },
+    { title: "Kode Akun", icon: <NotebookPen size={20} />, path: "/akun" },
+    { title: "Kode Kegiatan", icon: <NotebookPen size={20} />, path: "/kegiatan" }
   ];
 
   return (

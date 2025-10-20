@@ -18,8 +18,12 @@ export default function UangMasukForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await apiClient.post('/uang-masuk', formData);
-    alert('Berhasil tambah transaksi');
+    try{
+      await apiClient.post('/uang-masuk', formData);
+      alert('Berhasil tambah transaksi');
+    } catch (error) {
+      alert('Gagal tambah transaksi: ' + (error as any).message);
+    }
   };
 
   return (

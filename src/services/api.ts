@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import { error } from "console";
 import { config } from "process";
 
@@ -11,16 +11,35 @@ const apiClient = axios.create({
   }
 });
 
-apiClient.interceptors.response.use((config) => {
-  try {
-    if (config && config.data && typeof FormData !== "undefined" && config.data instanceof FormData) {
-      if (config.headers) {
-        delete config.headers["Content-Type"];
-        delete config.headers["content-type"];
+// Interceptor request
+apiClient.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => { // Gunakan tipe yang benar
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // if (config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      // }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-}
-  } catch (e) {}
-  return config;
-}, (error) => Promise.reject(error));
+);
+
+// Interceptor response
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Hapus token dan role jika token tidak valid
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userRole');
+      // Redirect ke login
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;

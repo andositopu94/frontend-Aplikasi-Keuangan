@@ -67,7 +67,7 @@ export default function LaporanExportButton() {
         <div className="date-input-group">
           <div className="date-input">
           <label style={{ 
-            display: 'block',
+            display: 'inline-block',
             fontSize: '12px',
             fontWeight: '600',
             marginBottom: '6px',
@@ -83,7 +83,7 @@ export default function LaporanExportButton() {
 
         <div className="date-input">
           <label style={{ 
-            display: 'block',
+            display: 'inline-block',
             fontSize: '12px',
             fontWeight: '600',
             marginBottom: '8px',
@@ -103,7 +103,7 @@ export default function LaporanExportButton() {
           onClick={() => handleExport("excel")}
           disabled={loading}
           style={{ opacity: loading ? 0.6 : 1, 
-                   cursor: loading ? 'not-allowed' : 'pointer'
+                   cursor: loading ? 'not-allowed' : 'pointer', marginTop: '20px', paddingRight: '100px'
            }}
            onMouseOver={(e) => {
             if (!loading) {
@@ -129,7 +129,7 @@ export default function LaporanExportButton() {
           disabled={loading}
           className="btn-export pdf"
           style={{ cursor: loading ? 'not-allowed' : 'pointer',
-                   opacity: loading ? 0.6 : 1
+                   opacity: loading ? 0.6 : 1, marginTop: '20px'
            }}
            onMouseOver={(e) => {
             if (!loading) {

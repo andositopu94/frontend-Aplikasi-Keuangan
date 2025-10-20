@@ -107,7 +107,7 @@ export default function Dashboard() {
   const quickActions = [
     {
       title: "Buku Utama",
-      description: "Kelola transaksi keuangan dan lihat saldo terkini",
+      description: "Kelola transaksi keuangan",
       icon: "📖",
       link: "/buku-utama",
       color: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
@@ -334,12 +334,40 @@ export default function Dashboard() {
           {/* ✅ Fix: tambahkan props startDate & endDate */}
           <GroupedLaporanChart
             groupType="akun"
-            startDate={startDate}
-            endDate={endDate}
+            // startDate={startDate}
+            // endDate={endDate}
           />
+          <h2 style={{ marginTop: 24 }}>Grafik Saldo per Kegiatan</h2>
+          <GroupedLaporanChart groupType="kegiatan" />
         </div>
       </div>
 
+
+      <div>
+      <div style={{ marginBottom: 20 }}>
+        <label>
+          Tanggal Awal:
+          <input
+            type="date"
+            value={startDate}
+            max={endDate}
+            onChange={e => setStartDate(e.target.value)}
+            style={{ marginLeft: 8, marginRight: 16 }}
+          />
+        </label>
+        <label>
+          Tanggal Akhir:
+          <input
+            type="date"
+            value={endDate}
+            min={startDate}
+            max={today}
+            onChange={e => setEndDate(e.target.value)}
+            style={{ marginLeft: 8 }}
+          />
+        </label>
+      </div>
+    </div>
       {/* Histori Saldo */}
       <div className="card mb-8" style={{ marginBottom: "16px" }}>
         <h3 style={{ marginBottom: "12px", fontSize: "18px", fontWeight: '600' }}>Histori Saldo Semua Rekening</h3>
