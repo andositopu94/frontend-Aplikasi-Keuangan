@@ -11,14 +11,11 @@ const apiClient = axios.create({
   }
 });
 
-// Interceptor request
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => { // Gunakan tipe yang benar
+  (config: InternalAxiosRequestConfig) => { 
     const token = localStorage.getItem('authToken');
     if (token) {
-      // if (config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
-      // }
     }
     return config;
   },
@@ -27,15 +24,13 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Interceptor response
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Hapus token dan role jika token tidak valid
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userRole');
-      // Redirect ke login
       window.location.href = '/login';
     }
     return Promise.reject(error);

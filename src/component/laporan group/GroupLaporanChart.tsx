@@ -29,10 +29,10 @@ export const GroupedLaporanChart: React.FC<GroupedLaporanChartProps> = ({ groupT
     // if (!startDate || !endDate) return;
 
     setLoading(true);
-    apiClient.get(`/laporan/group/${groupType}`) // or add params if backend supports
+    apiClient.get(`/laporan/group/${groupType}`) 
       .then(res => {
         const result = res.data as any[];
-        console.log("DATA API:", result); // debug
+        console.log("DATA API:", result); 
         setLabels(result.map(item => item.nama));
         setSaldoData(result.map(item => item.saldo));
       })

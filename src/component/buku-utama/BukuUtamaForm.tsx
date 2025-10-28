@@ -17,9 +17,7 @@ const BukuUtamaForm: React.FC<BukuUtamaFormProps> = ({ onSuccess }) => {
     rekeningTujuan: '',
     deskripsi: '',
     kodeAkun: '',
-    // namaAkun: '',
     kodeKegiatan: '',
-    // namaKegiatan: ''
   });
 
   const handleChange = (

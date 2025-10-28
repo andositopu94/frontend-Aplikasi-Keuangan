@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { TableColumn } from '../../types/TableColumn';
-// import '../layout/BukuList.css';
-import BukuUtamaList from '../buku-utama/BukuUtamaList';
+import apiClient from '../../services/api';
 
 interface DynamicTableProps<T> {
   fetchUrl: string;
@@ -34,6 +32,7 @@ export const DynamicTable = <T extends Record<string, any>>({
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const stableParams = JSON.stringify(extraParams);
   const page = currentPage ?? internalPage;
 
@@ -41,23 +40,21 @@ export const DynamicTable = <T extends Record<string, any>>({
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      //  Gunakan URL untuk membangun query string dengan benar
-      const url = new URL(fetchUrl, window.location.origin);
-      url.searchParams.set('page', page.toString());
-      url.searchParams.set('size', pageSize.toString());
+      // const url = new URL(fetchUrl, window.location.origin);
+      // url.searchParams.set('page', page.toString());
+      // url.searchParams.set('size', pageSize.toString());
+      const params: Record<string, any> = {page, size: pageSize, ...extraParams};
       
+      // Object.entries(extraParams).forEach(([key, value]) => {
+      //     url.searchParams.set(key, value ?? '');
+      // });
 
-      // Tambahkan extraParams
-      Object.entries(extraParams).forEach(([key, value]) => {
-          url.searchParams.set(key, value ?? '');
-      });
+      //  console.log("Request URL:", url.toString());
 
-       console.log("Request URL:", url.toString());
-
-      const res = await axios.get(url.toString());
+      const res = await apiClient.get(fetchUrl, { params });
       console.log("Response:", res.data);
+      
       const responseData = res.data;
-
       if (responseData.content !== undefined) {
         setData(responseData.content);
         setTotalPages(responseData.totalPages || 1);
@@ -65,8 +62,18 @@ export const DynamicTable = <T extends Record<string, any>>({
         setData(responseData);
         setTotalPages(1);
       }
-    } catch (error) {
-      console.error("Gagal mengambil ", error);
+    } catch (error:any) {
+      console.error("Gagal mengambil data: ", error);
+      const status = error.response?.status;
+      if (status === 403) {
+        setErrorMsg("Akses ditolak (403). Anda tidak memiliki izin untuk melihat data ini.");
+      }else if (status === 401) {
+        setErrorMsg("Sesi berakhir (401). Silakan login ulang.");
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
+      }else {
+        setErrorMsg("Terjadi kesalahan saat mengambil data.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +83,7 @@ export const DynamicTable = <T extends Record<string, any>>({
 }, [page, fetchUrl, refreshKey, pageSize, stableParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-   const  searchValue = (e.target.value);
+  const  searchValue = (e.target.value);
     if (onPageChange) onPageChange(0);
     else setInternalPage(0); 
   };
@@ -89,7 +96,21 @@ export const DynamicTable = <T extends Record<string, any>>({
     <div>
       {isLoading && <div className="table-loading">Memuat data...</div>}
 
-      {/* Table */}
+      {errorMsg && (
+        <div
+          style={{
+            background: "#fee2e2",
+            color: "#b91c1c",
+            padding: "8px 12px",
+            borderRadius: "8px",
+            marginBottom: "10px",
+            fontSize: "14px",
+          }}
+        >
+          {errorMsg}
+        </div>
+      )}
+
       <table className='data-table'>
         <thead>
           <tr>

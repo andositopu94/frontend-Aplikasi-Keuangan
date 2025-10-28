@@ -36,7 +36,8 @@ export default function BukuUtamaList() {
     if (searchTerm) params.append("search", searchTerm);
     if (jenisRekeningFilter)
       params.append("jenisRekening", jenisRekeningFilter);
-    params.append("size", "100");
+    params.append("size", "10");
+    params.append("page", currentPage.toString());
 
     apiClient
       .get(`/buku-utama?${params.toString()}`)
@@ -258,23 +259,13 @@ export default function BukuUtamaList() {
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
-          title={item.deskripsi} // Show full text on hover
+          title={item.deskripsi} 
         >
           {item.deskripsi || "-"}
         </div>
       ),
     },
-    // {
-    //   key: "saldoCash",
-    //   label: "Saldo Cash",
-    //   render: (item) => (
-    //     <div
-    //       style={{ fontWeight: "600", textAlign: "right", fontSize: "14px" }}
-    //     >
-    //       Rp{(item.saldoCash ?? 0).toLocaleString("id-ID")}
-    //     </div>
-    //   ),
-    // },
+    
     {
       key: "aksi",
       label: "Aksi",
@@ -582,7 +573,7 @@ export default function BukuUtamaList() {
         ) : (
           <DynamicTable<BukuUtamaDto>
             key={refreshKey}
-            fetchUrl="http://localhost:8080/api/buku-utama"
+            fetchUrl="/buku-utama"
             columns={columns}
             pageSize={10}
             extraParams={{
