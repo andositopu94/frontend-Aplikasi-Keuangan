@@ -12,6 +12,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const username = localStorage.getItem("username") || "Unknown User";
+  const role = localStorage.getItem("userRole") || "";
 
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
@@ -67,8 +69,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title }) => {
                   U
                 </div>
                 <div className="user-info">
-                  <div className="user-name">User Admin</div>
-                  <div className="user-role">Administrator</div>
+                  <div className="user-name">{username}</div>
+                  <small className="user-role">{role}</small>
                 </div>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>▼</span>
               </div>

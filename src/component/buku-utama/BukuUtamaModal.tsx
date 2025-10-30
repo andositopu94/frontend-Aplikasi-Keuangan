@@ -36,22 +36,39 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
   });
 
   // load lists + prefill for edit
-  useEffect(() => {
-    apiClient.get("/akun?size=100").then((res) => { 
-      if (res.data?.content) setAkunList(res.data.content);
-      else setAkunList(res.data);})
-      .catch((err) => console.error("Error fetching akun list:", err));
+  // useEffect(() => {
+  //   apiClient.get("/akun?size=100").then((res) => { 
+  //     if (res.data?.content) setAkunList(res.data.content);
+  //     else setAkunList(res.data);})
+  //     .catch((err) => console.error("Error fetching akun list:", err));
 
-    apiClient.get("/kegiatan?size=100").then((res) => {
-      if (res.data?.content) setKegiatanList(res.data.content);
-      else setKegiatanList(res.data);})
-      .catch((err) => console.error("Error fetching kegiatan list:", err));
+  //   apiClient.get("/kegiatan?size=100").then((res) => {
+  //     if (res.data?.content) setKegiatanList(res.data.content);
+  //     else setKegiatanList(res.data);})
+  //     .catch((err) => console.error("Error fetching kegiatan list:", err));
+  // }, []);
+  useEffect(() => {
+    apiClient
+      .get("/akun?size=100")
+      .then((res) => {
+        const list = res.data?.content ?? res.data;
+        setAkunList(Array.isArray(list) ? list : []);
+      })
+      .catch((err) => console.error("❌ Gagal ambil akun:", err));
+
+    apiClient
+      .get("/kegiatan?size=100")
+      .then((res) => {
+        const list = res.data?.content ?? res.data;
+        setKegiatanList(Array.isArray(list) ? list : []);
+      })
+      .catch((err) => console.error("❌ Gagal ambil kegiatan:", err));
   }, []);
   
   useEffect(() => {
     if (initialData) {
       setFormData({
-        tanggal: initialData.tanggal,
+        tanggal: initialData.tanggal ? new Date(initialData.tanggal).toISOString().slice(0,16) :"",
         kodeTransaksi: initialData.kodeTransaksi,
         jenisRekening: initialData.jenisRekening || "Cash",
         nominalMasuk: initialData.nominalMasuk,
@@ -93,38 +110,18 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
     if (saving) return;
     setSaving(true);
 
-    if (!formData.tanggal) {
-      alert("Tanggal wajib diisi");
-      return;
-    }
-    if (!formData.jenisRekening?.trim()) {
-      alert("Jenis Rekening wajib diisi");
-      return;
-    }
-    if (!formData.kodeTransaksi?.trim()) {
-      alert("Kode transaksi wajib diisi");
-      return;
-    }
-
-    const inputDate = new Date(formData.tanggal);
+    try {
+      if (!formData.tanggal) throw new Error("Tanggal wajib diisi");
+      if (!formData.kodeTransaksi?.trim()) throw new Error("Kode transaksi wajib diisi");
+      if (!formData.kodeAkun) throw new Error("Kode akun wajib dipilih");
+      if (!formData.kodeKegiatan) throw new Error("Kode kegiatan wajib dipilih");
+    
     const now = new Date();
-    if (inputDate >= now) {
-      alert("Tanggal tidak boleh lebih dari hari ini");
-      return;
-    }
-
-    if (!formData.kodeAkun){
-      alert("Kode akun wajid diisi");
-      return;
-    } 
-
-    if (!formData.kodeKegiatan) {
-      alert("Kode kegiatan wajib diisi");
-      return;
-    }
+    const inputDate = new Date(formData.tanggal);
+    if (inputDate > now) throw new Error("Tanggal tidak boleh lebih dari hari ini");
 
     const payload = {
-    tanggal: new Date(formData.tanggal).toISOString(),
+    tanggal: formData.tanggal + ":00",
     kodeTransaksi: formData.kodeTransaksi || "",
     jenisRekening: formData.jenisRekening,
     nominalMasuk: formData.nominalMasuk || 0,
@@ -136,7 +133,6 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
     kodeKegiatan: formData.kodeKegiatan!
   };
 
-  try {
     if (initialData?.traceNumber) {
       await apiClient.put(`/buku-utama/${initialData.traceNumber}`, payload);
       alert("Data berhasil diperbarui");
@@ -147,17 +143,22 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
     onSuccess();
     onClose();
   } catch (error: any) {
-    const backendErrors = error.response?.data || {};
-    alert(
-      "Gagal menyimpan:\n" +
-      Object.entries(backendErrors)
-        .map(([key, msg]) => `${key}: ${msg}`)
-        .join("\n")
-    );
-  } finally{
-    setSaving(false);
-  }
-};
+    console.error("Error Saving Data: ", error);
+    const backendErrors = error.response?.data;
+    if (backendErrors && typeof backendErrors === "object") {
+        alert(
+          "Gagal menyimpan:\n" +
+            Object.entries(backendErrors)
+              .map(([key, val]) => `${key}: ${val}`)
+              .join("\n")
+        );
+      } else {
+        alert(error.message || "Terjadi kesalahan saat menyimpan data");
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
 
 
   return (
@@ -201,7 +202,6 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
               </select>
             </div>
 
-            {/* Uang Masuk / Keluar */}
             <div>
               <label>Uang Masuk</label>
               <input type="number" name="nominalMasuk" value={formData.nominalMasuk || 0} onChange={handleChange} />
@@ -211,7 +211,6 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
               <input type="number" name="nominalKeluar" value={formData.nominalKeluar || 0} onChange={handleChange} />
             </div>
 
-            {/* Sumber / Tujuan */}
             <div>
               <label>Sumber Rekening</label>
               <input type="text" name="sumberRekening" value={formData.sumberRekening || ""} onChange={handleChange} />
@@ -281,8 +280,8 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
             <button type="button" onClick={onClose} style={cancelButtonStyle}>
               Batal
             </button>
-            <button type="submit" style={submitButtonStyle}>
-              {initialData ? "Perbarui" : "Simpan"}
+            <button type="submit" style={submitButtonStyle} disabled={saving}>
+              {saving ? "Menyimpan ..." : initialData ? "Perbarui" : "Simpan"}
             </button>
           </div>
         </form>

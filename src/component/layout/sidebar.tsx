@@ -33,6 +33,13 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     { title: "Kode Akun", icon: <NotebookPen size={20} />, path: "/akun" },
     { title: "Kode Kegiatan", icon: <NotebookPen size={20} />, path: "/kegiatan" }
   ];
+  
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userRole");
+    window.location.href = "/login";
+  };
 
   return (
     <aside
@@ -74,7 +81,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="logout-btn">
+        <button onClick={handleLogout} className="logout-btn">
           <LogOut size={18} />
           {isOpen && <span>Logout</span>}
         </button>

@@ -572,7 +572,7 @@ export default function BukuUtamaList() {
           </div>
         ) : (
           <DynamicTable<BukuUtamaDto>
-            key={refreshKey}
+            // key={refreshKey}
             fetchUrl="/buku-utama"
             columns={columns}
             pageSize={10}
