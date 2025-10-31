@@ -701,6 +701,22 @@ header {
   border-bottom: 1px solid var(--border-color);
   font-size: 14px;
   transition: background-color var(--transition-fast);
+  overflow: visible !important;
+}
+
+.data-table td button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.data-table td .btn-outline,
+.data-table td .btn-danger {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
 }
 
 .data-table tr:last-child td {

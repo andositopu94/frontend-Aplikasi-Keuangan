@@ -3,7 +3,8 @@ import { TableColumn } from "../../types/TableColumn";
 import apiClient from "../../services/api";
 
 interface DynamicTableProps<T> {
-  fetchUrl: string;
+  data?: T[];
+  fetchUrl?: string;
   columns: TableColumn<T>[];
   onRowDelete?: (id: string) => void;
   onRowUpdate?: (id: string, data: T) => void;
@@ -16,6 +17,7 @@ interface DynamicTableProps<T> {
 }
 
 export const DynamicTable = <T extends Record<string, any>>({
+  data: externalData,
   fetchUrl,
   columns,
   onRowDelete,
@@ -27,7 +29,7 @@ export const DynamicTable = <T extends Record<string, any>>({
   currentPage,
   onPageChange,
 }: DynamicTableProps<T>) => {
-  const [data, setData] = useState<T[]>([]);
+  const [data, setData] = useState<T[]>(externalData || []);
   const [internalPage, setInternalPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -37,6 +39,12 @@ export const DynamicTable = <T extends Record<string, any>>({
   const page = currentPage ?? internalPage;
 
   useEffect(() => {
+    if (externalData && externalData.length > 0) {
+      setData(externalData);
+      return;
+    }
+    if (!fetchUrl) return;
+    
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -117,8 +125,11 @@ export const DynamicTable = <T extends Record<string, any>>({
               <tr key={idx} className={idx % 2 === 0 ? "even-row" : "odd-row"}>
                 {columns.map((col) => (
                   <td key={String(col.key)}>
-                    {/* ✅ tampilkan render custom termasuk aksi */}
-                    {col.render ? col.render(item) : item[col.key] ?? "-"}
+                    {col.key === "aksi"
+                      ? col.render?.(item)
+                      : col.render
+                      ? col.render(item)
+                      : item[col.key] ?? "-"}
                   </td>
                 ))}
               </tr>
