@@ -67,8 +67,10 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
   
   useEffect(() => {
     if (initialData) {
+      // rawTanggal keeps backend string as-is (pattern yyyy-MM-dd'T'HH:mm:ss.SSS)
+      const rawTanggal = initialData.tanggal ? String(initialData.tanggal) : "";
       setFormData({
-        tanggal: initialData.tanggal ? new Date(initialData.tanggal).toISOString().slice(0,16) :"",
+        tanggal: rawTanggal ? rawTanggal.slice(0, 16) : "",
         kodeTransaksi: initialData.kodeTransaksi,
         jenisRekening: initialData.jenisRekening || "Cash",
         nominalMasuk: initialData.nominalMasuk,
@@ -120,8 +122,11 @@ const BukuUtamaModal: React.FC<BukuUtamaModalProps> = ({
     const inputDate = new Date(formData.tanggal);
     if (inputDate > now) throw new Error("Tanggal tidak boleh lebih dari hari ini");
 
+  // Convert datetime-local value (YYYY-MM-DDTHH:mm) to backend-expected format
+  // Backend DTO uses pattern "yyyy-MM-dd'T'HH:mm:ss.SSS" so produce e.g. 2025-09-07T03:18:00.000
+  const tanggalForPayload = formData.tanggal ? `${formData.tanggal}:00.000` : "";
     const payload = {
-    tanggal: formData.tanggal + ":00",
+    tanggal: tanggalForPayload,
     kodeTransaksi: formData.kodeTransaksi || "",
     jenisRekening: formData.jenisRekening,
     nominalMasuk: formData.nominalMasuk || 0,

@@ -23,12 +23,9 @@ const Login: React.FC = () => {
       });
 
       const { token, username: user, role } = response.data;
-
-      
+      const normalRole = role.replace(/^ROLE_/,"").toUpperCase().trim();
       localStorage.setItem("authToken", token);
       localStorage.setItem("username", user);
-
-      const normalRole = role.toUpperCase().trim();
       localStorage.setItem("userRole", normalRole);
       console.log("login berhasil", {user, normalRole});
 

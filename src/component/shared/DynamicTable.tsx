@@ -14,6 +14,8 @@ interface DynamicTableProps<T> {
   extraParams?: Record<string, string>;
   currentPage?: number;
   onPageChange?: (page: number) => void;
+  // When parent performs server-side pagination, provide total items so DynamicTable can render pagination.
+  totalItems?: number;
 }
 
 export const DynamicTable = <T extends Record<string, any>>({
@@ -28,6 +30,7 @@ export const DynamicTable = <T extends Record<string, any>>({
   extraParams = {},
   currentPage,
   onPageChange,
+  totalItems,
 }: DynamicTableProps<T>) => {
   const [data, setData] = useState<T[]>(externalData || []);
   const [internalPage, setInternalPage] = useState(0);
@@ -38,9 +41,24 @@ export const DynamicTable = <T extends Record<string, any>>({
   const stableParams = JSON.stringify(extraParams);
   const page = currentPage ?? internalPage;
 
+  // We intentionally depend on `stableParams` (JSON string) instead of the `extraParams` object
+  // to avoid re-running when parent recreates the object identity each render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (externalData && externalData.length > 0) {
       setData(externalData);
+      // If parent passes data array directly, prefer explicit totalItems (server-side) if provided,
+      // otherwise infer total pages from array length (client-side/full-data scenario).
+      if (typeof totalItems === "number") {
+        setTotalPages(Math.max(1, Math.ceil(totalItems / pageSize)));
+      } else {
+        const inferredTotal = Math.max(1, Math.ceil(externalData.length / pageSize));
+        setTotalPages(inferredTotal);
+      }
+      // make sure internal page is within bounds when parent doesn't control currentPage
+      if (currentPage === undefined) {
+        setInternalPage((p) => Math.min(p, Math.max(0, Math.ceil((totalItems ?? externalData.length) / pageSize) - 1)));
+      }
       return;
     }
     if (!fetchUrl) return;
@@ -48,18 +66,32 @@ export const DynamicTable = <T extends Record<string, any>>({
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const parsedExtra: Record<string, any> = stableParams ? JSON.parse(stableParams) : {};
         const params: Record<string, any> = {
           page,
           size: pageSize,
-          ...extraParams,
+          ...parsedExtra,
         };
         const res = await apiClient.get(fetchUrl, { params });
         const responseData = res.data;
 
         if (responseData.content !== undefined) {
           setData(responseData.content);
-          setTotalPages(responseData.totalPages || 1);
-        } else {
+          // server paginated response (Spring Data style)
+          if (typeof responseData.totalPages === 'number') {
+            setTotalPages(responseData.totalPages || 1);
+          } else if (typeof responseData.totalElements === 'number') {
+            setTotalPages(Math.max(1, Math.ceil(responseData.totalElements / pageSize)));
+          } else {
+            setTotalPages(1);
+          }
+        } else if (Array.isArray(responseData)) {
+          const total = Math.ceil(responseData.length / pageSize);
+          const start = page * pageSize;
+          const paginated = responseData.slice(start, start + pageSize);
+          setData(paginated);
+          setTotalPages(total);}
+        else {
           setData(responseData);
           setTotalPages(1);
         }
@@ -83,7 +115,7 @@ export const DynamicTable = <T extends Record<string, any>>({
     };
 
     fetchData();
-  }, [page, fetchUrl, refreshKey, pageSize, stableParams]);
+  }, [page, fetchUrl, refreshKey, pageSize, stableParams, externalData, currentPage, totalItems]);
 
   return (
     <div>
@@ -110,13 +142,14 @@ export const DynamicTable = <T extends Record<string, any>>({
             {columns.map((col) => (
               <th key={String(col.key)}>{col.label}</th>
             ))}
+            {(onRowUpdate || onRowDelete) && <th>Aksi</th>}
           </tr>
         </thead>
 
         <tbody>
           {data.length === 0 && !isLoading ? (
             <tr>
-              <td colSpan={columns.length} className="no-data">
+              <td colSpan={columns.length + (onRowUpdate || onRowDelete ? 1 : 0)} className="no-data">
                 Tidak ada data
               </td>
             </tr>
@@ -125,13 +158,30 @@ export const DynamicTable = <T extends Record<string, any>>({
               <tr key={idx} className={idx % 2 === 0 ? "even-row" : "odd-row"}>
                 {columns.map((col) => (
                   <td key={String(col.key)}>
-                    {col.key === "aksi"
-                      ? col.render?.(item)
-                      : col.render
-                      ? col.render(item)
-                      : item[col.key] ?? "-"}
+                    {col.render ? col.render(item) : item[col.key] ?? "-"}
                   </td>
                 ))}
+
+             {(onRowUpdate || onRowDelete) && (
+                  <td className="action-cells">
+                    {onRowUpdate && (
+                      <button
+                        onClick={() => onRowUpdate(item["traceNumber"] || item["id"], item)}
+                        className="action-btn edit-btn"
+                      >
+                        Edit
+                      </button>
+                    )}
+                    {onRowDelete && (
+                      <button
+                        onClick={() => onRowDelete(item["traceNumber"] || item["id"])}
+                        className="action-btn delete-btn"
+                      >
+                        Hapus
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))
           )}

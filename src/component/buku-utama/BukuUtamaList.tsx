@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { DynamicTable } from "../shared/DynamicTable";
 import { BukuUtamaDto } from "../../types/BukuUtamaDto";
 import { TableColumn } from "../../types/TableColumn";
@@ -28,30 +28,85 @@ export default function BukuUtamaList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data, setData] = useState<BukuUtamaDto[]>([]);
-  const userRole = localStorage.getItem("userRole") || "USER";
+  const [totalItems, setTotalItems] = useState<number | undefined>(undefined);
+  // const [userRole, setUserRole] = useState("USER");
+  // useEffect(() => {
+  //   const saveRole = localStorage.getItem("userRole");
+  //   if (saveRole) setUserRole(saveRole.toUpperCase().trim());
+  // }, []);
 
-  const fetchData = () => {
+  const [userRole, setUserRole] = useState<string>(() => {
+    // Ambil nilai awal dari localStorage (pastikan trim & uppercase agar konsisten)
+    const v = localStorage.getItem("userRole");
+    return v ? v.trim().toUpperCase() : "USER";
+  });
+    
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "userRole") {
+        const newVal = e.newValue ? e.newValue.trim().toUpperCase() : "USER";
+        setUserRole(newVal);
+      }
+    };
+
+    const handleRoleChange = (e: Event) => {
+      const newVal = localStorage.getItem("userRole");
+      setUserRole(newVal ? newVal.trim().toUpperCase() : "USER");
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("userRoleChanged", handleRoleChange); // optional helper jika Anda trigger custom event pada login
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("userRoleChanged", handleRoleChange);
+    };
+  }, []);
+
+  const fetchData = useCallback(() => {
     setIsLoading(true);
     const params = new URLSearchParams();
     if (searchTerm) params.append("search", searchTerm);
-    if (jenisRekeningFilter)
-      params.append("jenisRekening", jenisRekeningFilter);
+    if (jenisRekeningFilter) params.append("jenisRekening", jenisRekeningFilter);
     params.append("size", "10");
     params.append("page", currentPage.toString());
 
+    const url = `/buku-utama?${params.toString()}`;
+    console.log('[BukuUtamaList] fetching', { url, page: currentPage, size: 10, searchTerm, jenisRekeningFilter });
     apiClient
-      .get(`/buku-utama?${params.toString()}`)
+      .get(url)
       .then((res) => {
         const result = res.data;
-        setData(result.content || result);
+        console.log('[BukuUtamaList] response received', {
+          page: result.pageable?.pageNumber ?? result.number ?? null,
+          size: result.pageable?.pageSize ?? result.size ?? null,
+          totalElements: result.totalElements ?? null,
+          totalPages: result.totalPages ?? null,
+        });
+        const content = result.content || result;
+        setData(content);
+        // If server returns totalElements (Spring Data), use it to calculate pagination
+        if (result.totalElements !== undefined) {
+          setTotalItems(result.totalElements);
+        } else if (result.totalPages !== undefined) {
+          // approximate total items when only totalPages provided
+          setTotalItems(result.totalPages * 10);
+        } else {
+          setTotalItems(Array.isArray(content) ? content.length : undefined);
+        }
       })
       .catch((err) => console.error("Gagal ambil data:", err))
       .finally(() => setIsLoading(false));
-  };
+  }, [searchTerm, jenisRekeningFilter, currentPage]);
 
   useEffect(() => {
     fetchData();
-  }, [refreshKey, searchTerm, jenisRekeningFilter]);
+  }, [fetchData, refreshKey]);
+
+  // when user changes search or filter, reset to first page
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm, jenisRekeningFilter]);
 
   const handleSuccess = () => {
     setRefreshKey((prev) => prev + 1);
@@ -393,88 +448,6 @@ export default function BukuUtamaList() {
         </div>
       </div>
 
-      {/* <div
-        className="grid grid-cols-5 gap-4 mb-6"
-        style={{
-          display: "grid",
-          gridTemplate: "repeat(5,1fr)",
-          gap: "16px",
-        }}
-      >
-        <div className="stats-card total-data">
-          <div className="stats-icon">
-            <span className="icon">📊</span>
-          </div>
-          <div className="stats-content">
-            <div className="stats-label">Total Data</div>
-            <div className="stats-value">{totalData}</div>
-            <div className="stats-trend">
-              <span className="trend-up">All Records</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="stats-card cash">
-          <div className="stats-icon">
-            <span className="icon">💵</span>
-          </div>
-          <div className="stats-content">
-            <div className="stats-label">Cash</div>
-            <div className="stats-value">{cashCount}</div>
-            <div className="stats-trend">
-              <span className="trend-up">
-                {calculatePercent(cashCount, totalData)}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="stats-card main-bca">
-          <div className="stats-icon">
-            <span className="icon">🏦</span>
-          </div>
-          <div className="stats-content">
-            <div className="stats-label">Main BCA</div>
-            <div className="stats-value">{mainBcaCount}</div>
-            <div className="stats-trend">
-              <span className="trend-up">
-                {calculatePercent(mainBcaCount, totalData)}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="stats-card bca-dir">
-          <div className="stats-icon">
-            <span className="icon">💳</span>
-          </div>
-          <div className="stats-content">
-            <div className="stats-label">BCA Dir</div>
-            <div className="stats-value">{bcaDirCount}</div>
-            <div className="stats-trend">
-              <span className="trend-neutral">
-                {calculatePercent(bcaDirCount, totalData)}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="stats-card pcu">
-          <div className="stats-icon">
-            <span className="icon">🔄</span>
-          </div>
-          <div className="stats-content">
-            <div className="stats-label">PCU</div>
-            <div className="stats-value">{pcuCount}</div>
-            <div className="stats-trend">
-              <span className="trend-down">
-                {calculatePercent(pcuCount, totalData)}%
-              </span>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className="stats-horizontal-container mb-6">
         <div className="stats-row">
           <div className="stats-card-horizontal total-data">
@@ -573,7 +546,7 @@ export default function BukuUtamaList() {
         ) : (
           <DynamicTable<BukuUtamaDto>
             // key={refreshKey}
-            // fetchUrl="/buku-utama"
+            fetchUrl="/buku-utama"
             data={data}
             columns={columns}
             pageSize={10}
@@ -585,6 +558,7 @@ export default function BukuUtamaList() {
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             refreshKey={refreshKey}
+            totalItems={totalItems}
           />
         )}
       </div>

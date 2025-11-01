@@ -51,7 +51,8 @@ export default function AkunList() {
       alert('Akun berhasil dihapus');
       setRefreshKey((k) => k + 1);
     } catch (e: any) {
-      alert('Gagal hapus: ' + e.response?.data?.message || e.message);
+      const msg = e.response?.data?.error || e.response?.data?.message || e.message;
+      alert('Gagal hapus: ' + msg);
     }
   };
 
