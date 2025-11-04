@@ -50,9 +50,12 @@ export default function AkunList() {
       await apiClient.delete(`/akun/${kode}`);
       alert('Akun berhasil dihapus');
       setRefreshKey((k) => k + 1);
-    } catch (e: any) {
-      const msg = e.response?.data?.error || e.response?.data?.message || e.message;
-      alert('Gagal hapus: ' + msg);
+    } catch (error: any) {
+      if (error.response?.status === 400 && error.response?.data?.error?.includes('foreign key constraint')) {
+        alert('Akun tidak dapat dihapus karena sudah digunakan pada laporan lapangan.');
+      } else {
+        alert('Terjadi kesalahan saat menghapus akun.');
+      }
     }
   };
 

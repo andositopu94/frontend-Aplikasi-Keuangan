@@ -1,0 +1,281 @@
+/* UangKeluarRekap.css */
+.rekap-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin: 20px 0;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.rekap-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.rekap-card h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rekap-card h2::before {
+  content: '💸';
+  font-size: 1.3rem;
+}
+
+.rekap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.rekap-table thead {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.rekap-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.rekap-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.rekap-table tbody tr:hover {
+  background-color: #fef2f2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rekap-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.rekap-table tbody tr:nth-child(even):hover {
+  background-color: #fef2f2;
+}
+
+.rekap-table td {
+  padding: 14px 16px;
+  color: #475569;
+}
+
+/* Tanggal Styling */
+.tanggal-cell {
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* Jenis Rekening Styling */
+.jenis-rekening-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+  min-width: 100px;
+  text-transform: capitalize;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Warna untuk berbagai jenis rekening - Uang Keluar */
+.jenis-rekening-badge.tunai {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.jenis-rekening-badge.bank {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.jenis-rekening-badge.digital {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+.jenis-rekening-badge.investasi {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.jenis-rekening-badge.tabungan {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+}
+
+.jenis-rekening-badge.deposito {
+  background: linear-gradient(135deg, #84cc16, #65a30d);
+  color: white;
+}
+
+.jenis-rekening-badge.lainnya {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+/* Nominal Uang Keluar */
+.nominal-keluar {
+  font-weight: 600;
+  color: #dc2626;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.nominal-keluar::before {
+  content: "Rp";
+  margin-right: 2px;
+  font-weight: normal;
+}
+
+/* Loading State */
+.rekap-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #ef4444;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.rekap-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+}
+
+.rekap-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* Summary Section */
+.rekap-summary {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #fecaca;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.summary-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.summary-value {
+  font-weight: 700;
+  color: #dc2626;
+  font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rekap-card {
+    padding: 16px;
+    margin: 16px 0;
+  }
+  
+  .rekap-card h2 {
+    font-size: 1.25rem;
+  }
+  
+  .rekap-table {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .rekap-table th,
+  .rekap-table td {
+    padding: 10px 8px;
+  }
+  
+  .jenis-rekening-badge {
+    min-width: 80px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .rekap-summary {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rekap-card {
+    padding: 12px;
+  }
+  
+  .rekap-table {
+    font-size: 0.75rem;
+  }
+  
+  .rekap-table th,
+  .rekap-table td {
+    padding: 8px 6px;
+  }
+  
+  .jenis-rekening-badge {
+    min-width: 70px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Animation untuk data baru */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rekap-table tbody tr {
+  animation: fadeInUp 0.3s ease-out;
+}

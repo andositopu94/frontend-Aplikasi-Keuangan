@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiClient from "../../services/api";
 import { UangMasukRekapDto } from "../../types/UangMasukRekapDto";
+import "../uang-masuk/UangMasukRekap.css";
 
 export default function UangMasukRekapList() {
   const [data, setData] = useState<UangMasukRekapDto[]>([]);
@@ -12,11 +13,11 @@ export default function UangMasukRekapList() {
   }, []);
 
   return (
-    <div className="card">
+    <div className="kartu">
       <h2>Rekap Uang Masuk</h2>
-      <table className="data-table">
+      <table className="kartu-table">
         <thead>
-          <tr>
+          <tr>  
             <th>Tanggal</th>
             <th>Jenis Rekening</th>
             <th>Total Uang Masuk</th>
@@ -25,9 +26,9 @@ export default function UangMasukRekapList() {
         <tbody>
           {data.map((item, idx) => (
             <tr key={idx}>
-              <td>{new Date(item.tanggal).toLocaleDateString("id-ID")}</td>
-              <td>{item.jenisRekening}</td>
-              <td>Rp{item.totalUangMasuk.toLocaleString("id-ID")}</td>
+              <td data-label="Tanggal">{new Date(item.tanggal).toLocaleDateString("id-ID")}</td>
+              <td data-label="Jenis Rekening">{item.jenisRekening}</td>
+              <td data-label="Total Uang Masuk">Rp{item.totalUangMasuk.toLocaleString("id-ID")}</td>
             </tr>
           ))}
         </tbody>

@@ -27,12 +27,16 @@ export default function KegiatanModal({ isOpen, onClose, onSuccess, initialData 
     e.preventDefault();
     try {
       if (initialData) {
-        await apiClient.put(`/kegiatan/${initialData.kodeKegiatan}`, form);
+        // await apiClient.put(`/kegiatan/${initialData.kodeKegiatan}`, form);
+        await apiClient.put(`/kegiatan/${encodeURIComponent(initialData.kodeKegiatan)}`, {
+          namaKegiatan: form.namaKegiatan,
+        });
       } else {
         await apiClient.post('/kegiatan', form);
       }
       onSuccess();
     } catch (err: any) {
+      console.error('Save error:', err.response?.status, err.response?.data || err.message);
       alert('Gagal menyimpan: ' + (err.response?.data?.message || err.message));
     }
   };
@@ -49,7 +53,7 @@ export default function KegiatanModal({ isOpen, onClose, onSuccess, initialData 
               value={form.kodeKegiatan}
               onChange={handleChange}
               required
-            //   disabled={!!initialData}
+              disabled={!!initialData}
             />
           </div>
           <div>

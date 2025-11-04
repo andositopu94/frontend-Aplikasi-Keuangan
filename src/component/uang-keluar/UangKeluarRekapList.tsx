@@ -4,6 +4,7 @@ import { UangKeluarRekapDto } from "../../types/UangKeluarRekapDto";
 
 export default function UangKeluarRekapList() {
   const [data, setData] = useState<UangKeluarRekapDto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     apiClient.get("/rekap/keluar")

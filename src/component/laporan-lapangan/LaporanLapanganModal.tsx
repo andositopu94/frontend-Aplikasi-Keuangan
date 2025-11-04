@@ -9,7 +9,8 @@ interface ModalProps{
   isOpen: boolean;
   onSuccess: () => void;
   onClose: () => void;
-  initialData?: LaporanLapanganRequest | null;
+  // initialData?: LaporanLapanganRequest | null;
+  initialData?: any;
 }
 export default function LaporanLapanganModal({
     isOpen,
@@ -114,10 +115,13 @@ if (!isOpen) return null;
       let fixedFormData: any = { ...formData };
       
       if (fixedFormData.tanggal && (fixedFormData.tanggal as string).length === 10) {
-        fixedFormData.tanggal = (fixedFormData.tanggal as string) + "T00:00:00";
+        fixedFormData.tanggal = (fixedFormData.tanggal as string) + "T00:00:00.000";
       }
-        if (!fixedFormData.namaUser) {
-          fixedFormData.namaUser = ""; //namauser yang akan diisi dari form
+
+      delete fixedFormData.buktiPath;
+
+      if (!fixedFormData.namaUser) {
+          fixedFormData.namaUser = ""; 
         }
       data.append("request", new Blob([JSON.stringify(fixedFormData)], { type: "application/json" }));
       if (bukti) {
@@ -130,7 +134,8 @@ if (!isOpen) return null;
         });
         alert("Data berhasil diperbarui");
       } else {
-        await apiClient.post("/laporan-lapangan/upload", data, {
+        await apiClient.post("/laporan-lapangan/upload", data,
+         {
           headers: { "Content-Type": "multipart/form-data" }
         });
         alert("Data berhasil ditambahkan");

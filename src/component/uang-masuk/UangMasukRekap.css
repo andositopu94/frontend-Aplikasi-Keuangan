@@ -1,0 +1,118 @@
+.kartu {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  /* margin: 20px auto; */
+  width: 95%;
+  /* max-width: 1000px; */
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.kartu:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+.kartu h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.kartu-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fafafa;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header tabel */
+.kartu-table thead {
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  color: white;
+}
+
+.kartu-table th {
+  text-align: left;
+  padding: 14px 16px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Baris data */
+.kartu-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #090a0b;
+  font-size: 0.95rem;
+}
+
+/* Warna zebra */
+.kartu-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Hover efek */
+.kartu-table tbody tr:hover {
+  background-color: #eef2ff;
+  transition: background-color 0.2s ease;
+}
+
+/* Format angka */
+.kartu-table td:last-child {
+  font-weight: 600;
+  color: #565b13;
+}
+
+@media (max-width: 1024px) {
+  .card {
+    width: 95%;
+    margin: 24px auto;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 16px;
+  }
+
+  .kartu-table,
+  .kartu-table thead,
+  .kartu-table tbody,
+  .kartu-table th,
+  .kartu-table td,
+  .kartu-table tr {
+    display: block;
+  }
+
+  .kartu-table thead {
+    display: none;
+  }
+
+  .kartu-table tr {
+    margin-bottom: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .kartu-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .kartu-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #4a5568;
+  }
+}
