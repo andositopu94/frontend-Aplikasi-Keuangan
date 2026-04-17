@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+build/
+dist/
 
 # misc
 .DS_Store
@@ -18,7 +19,19 @@
 .env.test.local
 .env.production.local
 .env
+.env.production
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+#OS
+.DB_Store
+Thumbs.db
